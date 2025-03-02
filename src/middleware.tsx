@@ -15,5 +15,10 @@ export default auth(async function middleware(req: NextRequest) {
 });
 
 export const config = {
-  matcher: ["/home", "/playlists", "/playlist/:path"],
+  matcher: [
+    "/home",
+    "/playlists",
+    "/playlist/:path",
+    "/playlist/:path/planning/:path",
+  ],
 };

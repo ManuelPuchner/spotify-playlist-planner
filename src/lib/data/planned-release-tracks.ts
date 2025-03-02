@@ -81,6 +81,14 @@ export async function addTrackToPlannedRelease(
     throw new Error("Planned release not found");
   }
 
+  if (
+    plannedRelease.scheduledAt &&
+    plannedRelease.scheduledAt.toISOString().split("T")[0] <=
+      new Date().toISOString().split("T")[0]
+  ) {
+    throw new Error("Planned release has once already been activated");
+  }
+
   const count = await prisma.plannedReleaseSong.count({
     where: {
       plannedRelease: {
@@ -133,6 +141,14 @@ export async function removeTrackFromPlannedRelease(
 
   if (!plannedRelease) {
     throw new Error("Planned release not found");
+  }
+
+  if (
+    plannedRelease.scheduledAt &&
+    plannedRelease.scheduledAt.toISOString().split("T")[0] <=
+      new Date().toISOString().split("T")[0]
+  ) {
+    throw new Error("Planned release has once already been activated");
   }
 
   const deleted = await prisma.plannedReleaseSong.deleteMany({

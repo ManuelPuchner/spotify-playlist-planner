@@ -7,9 +7,11 @@ import { useMusicStore } from "@/lib/store/music";
 export default function PlannedTracksList({
   plannedTracks: _plannedTracks,
   plannedReleaseId,
+  disableControls,
 }: {
   plannedTracks: PlannedTrack[];
   plannedReleaseId: string;
+  disableControls?: boolean;
 }) {
   const setPlannedTracks = useMusicStore((state) => state.setPlannedTracks);
   const plannedTracks = useMusicStore((state) => state.plannedtracks);
@@ -26,7 +28,11 @@ export default function PlannedTracksList({
   return (
     <>
       {plannedTracks.map((track) => (
-        <PlannedTracksListItem key={track.spotifyTrackId} track={track} />
+        <PlannedTracksListItem
+          key={track.spotifyTrackId}
+          track={track}
+          disableControls={disableControls}
+        />
       ))}
     </>
   );

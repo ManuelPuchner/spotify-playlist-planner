@@ -98,6 +98,7 @@ model PlannedRelease {
   scheduledAt       DateTime? // When the release should occur
   recurrenceRule    String? // Optional: e.g., "every friday", "alle 5 tage", etc.
   plannedSongs      PlannedReleaseSong[]
+  isActivated       Boolean              @default(false) // Whether the release is active
 
   name String? // Optional name for the release
 

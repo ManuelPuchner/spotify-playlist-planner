@@ -12,7 +12,7 @@ export default function PlaylistPageTemplate({
   playlist,
 }: PlaylistPageTemplateProps) {
   return (
-    <div className="w-full flex flex-col justify-center gap-4 pt-12 px-12">
+    <div className="w-full flex flex-col justify-center gap-4 pt-12 px-12 pb-24">
       <div className=" flex gap-8 ">
         <div className="relative group h-auto">
           <div>

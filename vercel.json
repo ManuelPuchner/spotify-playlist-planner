@@ -1,0 +1,8 @@
+{
+  "crons": [
+    {
+      "path": "/api/release-playlists",
+      "schedule": "0 0 * * *"
+    }
+  ]
+}

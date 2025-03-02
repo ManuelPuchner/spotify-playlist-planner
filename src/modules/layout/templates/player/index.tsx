@@ -21,7 +21,7 @@ export default function Player({ token }: { token: string }) {
 
   return (
     <WebPlaybackSDK
-      initialDeviceName="My Spotify Player"
+      initialDeviceName="Spotify Playlist Planner"
       getOAuthToken={getOAuthToken}
       initialVolume={1}
     >
