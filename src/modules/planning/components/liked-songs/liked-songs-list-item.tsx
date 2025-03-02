@@ -12,7 +12,6 @@ import {
   addToPlaybackQueue,
   playTrack,
 } from "@/lib/data/spotify/spotify-fetch-client";
-import useSpotifyDeviceId from "@/lib/hooks/useSpotifyDeviceId";
 import { usePlayerStore } from "@/lib/store/player";
 import { getOrderedUris } from "@/lib/util/get-ordered-track-uris";
 
@@ -39,7 +38,7 @@ export default function LikedSongsListItem({
 
   const { data: session } = useSession();
 
-  const deviceId = useSpotifyDeviceId();
+  const deviceId = usePlayerStore((state) => state.currentlyPlayingDeviceId);
 
   if (!session || !session.user) {
     throw new Error("User not found");
@@ -73,9 +72,9 @@ export default function LikedSongsListItem({
         _track.id,
         session
       );
+      toast.success("Song added to planned release");
       await addToPlaybackQueue(_track.uri, deviceId, session);
       updatePlannedTrack(_track.id, plannedTrack);
-      toast.success("Song added to planned release");
     } catch (error: unknown) {
       removePlannedTrack(_track.id);
       addLikedSong({ added_at, track: _track });
