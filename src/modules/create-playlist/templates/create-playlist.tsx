@@ -31,7 +31,7 @@ export default function CreatePlaylistTemplate() {
         session
       );
 
-      addManagedPlaylist(createdPlaylist);
+      addManagedPlaylist(createdPlaylist.data);
       formRef.current?.reset();
       close();
       toast.success("Playlist created successfully");

@@ -61,6 +61,7 @@ function PlayerWrapper() {
           : "max-h-[20rem]"
       }`}
     >
+      {/* {JSON.stringify(player)} */}
       <PlayingTrack />
       <div className="flex items-center gap-4">
         {playbackState && playbackState?.track_window.current_track && (

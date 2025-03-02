@@ -6,7 +6,7 @@ export function useFilteredLikedSongs() {
   const plannedtracks = useMusicStore((state) => state.plannedtracks);
 
   const filteredLikedSongs = useMemo(() => {
-    const plannedIds = plannedtracks.map((track) => track.id);
+    const plannedIds = plannedtracks.map((track) => track.spotifyTrackId);
     return likedSongs.filter((song) => !plannedIds.includes(song.track.id));
   }, [likedSongs, plannedtracks]);
 

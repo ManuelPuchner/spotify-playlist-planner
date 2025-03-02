@@ -4,14 +4,10 @@ import { usePlayerStore } from "@/lib/store/player";
 import Image from "next/image";
 import Link from "next/link";
 import { useEffect } from "react";
-import {
-  usePlaybackState,
-  useSpotifyPlayer,
-} from "react-spotify-web-playback-sdk";
+import { usePlaybackState } from "react-spotify-web-playback-sdk";
 
 export default function PlayingTrack() {
   const playbackState = usePlaybackState();
-  const player = useSpotifyPlayer();
   const setCurrentPlayingTrack = usePlayerStore(
     (state) => state.setCurrentPlayingTrack
   );
@@ -26,19 +22,6 @@ export default function PlayingTrack() {
       setIsCurrentlyPlayingPaused(playbackState.paused);
     }
   }, [playbackState, setCurrentPlayingTrack, setIsCurrentlyPlayingPaused]);
-
-  useEffect(() => {
-    if (player) {
-      const handleTrackChange = (state: Spotify.PlaybackState) => {
-        console.log("Track changed", state.track_window.current_track);
-        //setTrack(state.track_window.current_track);
-      };
-      player.addListener("player_state_changed", handleTrackChange);
-      return () => {
-        player.removeListener("player_state_changed", handleTrackChange);
-      };
-    }
-  }, [player]);
 
   if (!track || !playbackState?.track_window.current_track) {
     return null;
