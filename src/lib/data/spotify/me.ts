@@ -58,4 +58,6 @@ export async function tryRefreshToken(
       },
     },
   });
+
+  return newTokens;
 }

@@ -1,3 +1,4 @@
+import { tryRefreshToken } from "@/lib/data/spotify/me";
 import { prisma } from "@/prisma";
 import { Prisma } from "@prisma/client";
 import { NextRequest, NextResponse } from "next/server";
@@ -122,13 +123,35 @@ async function releaseSpotifyPlaylist(
     (plannedSong) => `spotify:track:${plannedSong.spotifyTrackId}`
   );
 
-  // Call the Spotify API to update the playlist
-  const responseText = await fetchSpotifyPlaylist(
-    spotifyPlaylistId,
-    spotifyAccount.access_token,
-    newTrackUris
-  );
-  console.log("Spotify playlist updated:", responseText);
+  if (
+    spotifyAccount.expires_at &&
+    new Date(spotifyAccount.expires_at) < new Date()
+  ) {
+    // Refresh the Spotify access token
+    console.log("Refreshing Spotify access token...");
+    if (!spotifyAccount.refresh_token) {
+      throw new Error("No Spotify refresh token available");
+    }
+    const newTokens = await tryRefreshToken(
+      spotifyAccount.refresh_token,
+      spotifyAccount.providerAccountId
+    );
+
+    const responseText = await fetchSpotifyPlaylist(
+      spotifyPlaylistId,
+      newTokens.access_token,
+      newTrackUris
+    );
+    console.log("Spotify playlist updated with refreshed token:", responseText);
+  } else {
+    // Call the Spotify API to update the playlist
+    const responseText = await fetchSpotifyPlaylist(
+      spotifyPlaylistId,
+      spotifyAccount.access_token,
+      newTrackUris
+    );
+    console.log("Spotify playlist updated:", responseText);
+  }
 }
 
 async function fetchSpotifyPlaylist(
