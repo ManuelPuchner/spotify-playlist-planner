@@ -12,6 +12,8 @@
   },
   "dependencies": {
     "@auth/prisma-adapter": "^2.7.4",
+    "@neondatabase/serverless": "^0.10.4",
+    "@prisma/adapter-neon": "^6.4.1",
     "@prisma/client": "^6.4.1",
     "@prisma/extension-accelerate": "^1.2.2",
     "fuse.js": "^7.1.0",
@@ -21,6 +23,7 @@
     "react-dom": "^19.0.0",
     "react-hot-toast": "^2.5.2",
     "react-spotify-web-playback-sdk": "^3.0.2",
+    "ws": "^8.18.1",
     "zustand": "^5.0.3"
   },
   "devDependencies": {
