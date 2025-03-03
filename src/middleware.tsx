@@ -1,10 +1,8 @@
 import { NextRequest, NextResponse } from "next/server";
-import { authOptions } from "./auth";
-import NextAuth from "next-auth";
+
 import { prisma } from "./prisma";
 
-const { auth } = NextAuth(authOptions);
-export default auth(async function middleware(req: NextRequest) {
+export default async function middleware(req: NextRequest) {
   const token =
     req.cookies.get("__Secure-next-auth.session-token")?.value ||
     req.cookies.get("next-auth.session-token")?.value;
@@ -29,7 +27,7 @@ export default auth(async function middleware(req: NextRequest) {
     return NextResponse.redirect(new URL("/api/auth/signin", req.url));
   }
   return NextResponse.next();
-});
+}
 
 export const config = {
   matcher: [
