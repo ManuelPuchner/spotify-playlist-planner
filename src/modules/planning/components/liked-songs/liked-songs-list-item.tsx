@@ -3,26 +3,24 @@
 import toast from "react-hot-toast";
 import ScrollingText from "../truncate-scroll-text";
 import Image from "next/image";
-import { LikedSong, Track } from "@/types/tracks";
 import { addTrackToPlannedRelease } from "@/lib/data/planned-release-tracks";
 import { useSession } from "next-auth/react";
 import Link from "next/link";
 import { useMusicStore } from "@/lib/store/music";
 import {
   addToPlaybackQueue,
-  playTrack,
+  playLikedTracks,
 } from "@/lib/data/spotify/spotify-fetch-client";
 import { usePlayerStore } from "@/lib/store/player";
-import { getOrderedUris } from "@/lib/util/get-ordered-track-uris";
 import useSpotifyDeviceId from "@/lib/hooks/useSpotifyDeviceId";
+import { Track } from "@/types/tracks";
+import { useFilteredLikedSongs } from "@/lib/hooks/useFilteredLikedSongs";
 
 export default function LikedSongsListItem({
   track,
-  allTracks,
   added_at,
 }: {
   track: Track;
-  allTracks: LikedSong[];
   added_at: string;
 }) {
   const addPlannedTrack = useMusicStore((state) => state.addPlannedTrack);
@@ -36,6 +34,8 @@ export default function LikedSongsListItem({
   const plannedTracksLength = useMusicStore(
     (state) => state.plannedtracks.length
   );
+
+  const allTracks = useFilteredLikedSongs();
 
   const { data: session } = useSession();
 
@@ -93,13 +93,10 @@ export default function LikedSongsListItem({
 
   const handlePlay = async () => {
     console.log(deviceId);
-    if (deviceId && session) {
-      await playTrack(
+    if (deviceId && session && session.accounts.spotify?.providerAccountId) {
+      await playLikedTracks(
         deviceId,
-        getOrderedUris(
-          track.uri,
-          allTracks.map((likedSong) => likedSong.track)
-        ),
+        allTracks.findIndex((likedTrack) => likedTrack.track.id === track.id),
         session
       );
     }

@@ -91,6 +91,33 @@ export async function playTrack(
   return response;
 }
 
+export async function playLikedTracks(
+  deviceId: string,
+  offset: number,
+  session: Session
+) {
+  const response = await spotifyFetchClient(
+    "/me/player/play",
+    session,
+    {
+      method: "PUT",
+      body: JSON.stringify({
+        context_uri: "spotify:collection:tracks",
+        offset: {
+          position: offset,
+        },
+      }),
+    },
+    { device_id: deviceId }
+  );
+
+  if (!response.ok || response.status !== 204 || "data" in response) {
+    throw new Error("Error playing liked tracks");
+  }
+
+  return response;
+}
+
 /**
  *
  * @param offset number

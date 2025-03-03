@@ -70,7 +70,6 @@ export default function LikedSongsList({
         {tracks.map((trackWrapper, index) => (
           <LikedSongsListItem
             key={index}
-            allTracks={tracks}
             track={trackWrapper.track}
             added_at={trackWrapper.added_at}
           />
