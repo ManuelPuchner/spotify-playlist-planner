@@ -36,8 +36,6 @@ export const ControlButton = <K extends keyof Spotify.Player>({
     const method = player[onClickSpotifyActionName];
     console.log(typeof method);
     if (typeof method === "function") {
-      console.log(params);
-
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
       (method as (...args: any[]) => any).call(player, ...(params ?? []));
     }
