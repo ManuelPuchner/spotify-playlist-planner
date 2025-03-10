@@ -8,6 +8,7 @@ import LikedSongsSidebar from "../components/liked-songs/liked-songs-sidebar";
 import { getLikedTracksServer } from "@/lib/data/spotify/me";
 import PlannedTracksListSkeleton from "../components/skeletons/planned-tracks-list-skeleton";
 import ChangeReleaseDate from "../components/change-release-date";
+import Search from "../components/search";
 
 export default async function PlanningPageTemplate({
   plannedRelease,
@@ -101,6 +102,15 @@ export default async function PlanningPageTemplate({
           }
         />
       </Suspense>
+
+      {(plannedRelease.scheduledAt &&
+        plannedRelease.scheduledAt.toISOString().split("T")[0] >
+          new Date().toISOString().split("T")[0]) ||
+      !plannedRelease.scheduledAt ? (
+        <Search />
+      ) : (
+        <> </>
+      )}
 
       {(plannedRelease.scheduledAt &&
         plannedRelease.scheduledAt.toISOString().split("T")[0] >

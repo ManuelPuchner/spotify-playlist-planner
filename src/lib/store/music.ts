@@ -1,10 +1,11 @@
 import { create } from "zustand";
-import { LikedSong, PlannedTrack } from "@/types/tracks";
+import { LikedSong, PlannedTrack, Track } from "@/types/tracks";
 
 interface MusicStore {
   plannedtracks: PlannedTrack[];
   plannedReleaseId: string;
   likedSongs: LikedSong[];
+  searchedSongs: Track[];
 
   // Planned tracks methods
   setPlannedReleaseId: (id: string) => void;
@@ -17,6 +18,10 @@ interface MusicStore {
   addLikedSong: (song: LikedSong) => void;
   removeLikedSong: (songId: string) => void;
   addLikedSongs: (songs: LikedSong[]) => void;
+  // search songs
+  setSearchedSongs: (songs: Track[]) => void;
+  addSearchedSong: (song: Track) => void;
+  addSearchedSongs: (songs: Track[]) => void;
 
   // Computed selector to get liked songs without planned tracks
   getFilteredLikedSongs: () => LikedSong[];
@@ -26,6 +31,7 @@ export const useMusicStore = create<MusicStore>((set, get) => ({
   plannedtracks: [],
   plannedReleaseId: "",
   likedSongs: [],
+  searchedSongs: [],
 
   // Planned tracks methods
   setPlannedReleaseId: (id: string) => set({ plannedReleaseId: id }),
@@ -112,6 +118,17 @@ export const useMusicStore = create<MusicStore>((set, get) => ({
       ),
     }));
   },
+
+  // search songs
+  setSearchedSongs: (songs: Track[]) => set(() => ({
+    searchedSongs: songs
+  })),
+  addSearchedSong: (song: Track) => set(state => ({
+    searchedSongs: [...state.searchedSongs, song]
+  })),
+  addSearchedSongs: (songs: Track[]) => set(state => ({
+    searchedSongs: [...state.searchedSongs, ...songs]
+  })),
 
   // Computed selector: always return liked songs without planned tracks
   getFilteredLikedSongs: () => {

@@ -5,6 +5,27 @@ import { Device } from "@/types/spotify-general";
 import { Track } from "@/types/tracks";
 import { Session } from "next-auth";
 
+
+export async function searchTracks(query: string, offset: number, limit: number, session: Session) {
+  const response = await spotifyFetchClient<{ tracks: { items: Track[] } }>(
+    "/search",
+    session,
+    {},
+    { q: query, type: "track", offset, limit }
+  );
+
+  if(!response.ok || !("data" in response)) {
+    throw new Error("Error searching tracks")
+  } 
+  return response
+}
+
+/**
+ * 
+ * @param deviceId 
+ * @param session 
+ * @returns 
+ */
 export async function transferPlaybackToDevice(
   deviceId: string,
   session: Session
