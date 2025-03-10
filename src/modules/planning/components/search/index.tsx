@@ -6,11 +6,17 @@ import { searchTracks } from "@/lib/data/spotify/spotify-fetch-client";
 import { useSession } from "next-auth/react";
 import SearchList from "./search-list";
 import { useMusicStore } from "@/lib/store/music";
+import RecentSearchList from "./recent-search-list";
+import { useRecentSearchesStore } from "@/lib/store/recent-searches";
 
 export default function SearchTemplate() {
   const [searchQuery, setSearchQuery] = useState<string>("");
   const searchResults = useMusicStore((state) => state.searchedSongs);
   const setSearchResults = useMusicStore((state) => state.setSearchedSongs);
+
+  const setRecentSearchedTracks = useRecentSearchesStore(
+    (state) => state.setRecentSearches
+  );
 
   const [isLoading, setIsLoading] = useState<boolean>(false);
 
@@ -33,6 +39,21 @@ export default function SearchTemplate() {
     return () => clearTimeout(delayDebounceFn);
   }, [searchQuery, session, setSearchResults]);
 
+  useEffect(() => {
+      async function fetchRecentSearches() {
+        const res = await fetch("/api/recent-searches");
+        const data = await res.json();
+        console.log("recent searches:", data);
+        
+        if (!data.ok) {
+          return;
+        }
+        setRecentSearchedTracks(data.data);
+      }
+      fetchRecentSearches();
+      console.log("fetching recent searches");
+    }, [setRecentSearchedTracks]);
+
   if (!session) {
     return;
   }
@@ -43,7 +64,10 @@ export default function SearchTemplate() {
       <div className="flex flex-col flex-1 gap-4">
         <SearchBar searchQuery={searchQuery} setSearchQuery={setSearchQuery} />
         {isLoading && searchResults && (
-          <div role="status" className="w-full flex-1 flex justify-center items-center">
+          <div
+            role="status"
+            className="w-full flex-1 flex justify-center items-center"
+          >
             <svg
               aria-hidden="true"
               className="w-16 h-16 m-16 text-neutral-700 animate-spin fill-neutral-800"
@@ -63,13 +87,15 @@ export default function SearchTemplate() {
             <span className="sr-only">Loading...</span>
           </div>
         )}
-        {!isLoading && searchResults && (
+        {!isLoading && searchResults && searchQuery && (
           <SearchList
             initialTracksData={searchResults}
             query={searchQuery}
             session={session}
           />
         )}
+
+        {searchQuery.trim() === "" && <RecentSearchList />}
       </div>
     </>
   );

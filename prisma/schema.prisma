@@ -23,6 +23,7 @@ model User {
   updatedAt DateTime @updatedAt
 
   managedPlaylists ManagedPlaylist[]
+  recentSearches   RecentSearch[]
 }
 
 model Account {
@@ -117,4 +118,14 @@ model PlannedReleaseSong {
   updatedAt DateTime @updatedAt
 
   @@id([plannedReleaseId, spotifyTrackId])
+}
+
+model RecentSearch {
+  id                  String   @id @default(cuid())
+  userId              String
+  songSearchedTrackId String
+  createdAt           DateTime @default(now())
+  updatedAt           DateTime @updatedAt
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
 }

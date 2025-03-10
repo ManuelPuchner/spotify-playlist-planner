@@ -11,8 +11,15 @@ import { usePlayerStore } from "@/lib/store/player";
 import useSpotifyDeviceId from "@/lib/hooks/useSpotifyDeviceId";
 import { Track } from "@/types/tracks";
 import { playTrack } from "@/lib/data/spotify/spotify-fetch-client";
+import { useRecentSearchesStore } from "@/lib/store/recent-searches";
 
-export default function SearchListItem({ track }: { track: Track }) {
+export default function SearchListItem({
+  track,
+  isPlanned,
+}: {
+  track: Track;
+  isPlanned: boolean;
+}) {
   const addPlannedTrack = useMusicStore((state) => state.addPlannedTrack);
   const removePlannedTrack = useMusicStore((state) => state.removePlannedTrack);
   const updatePlannedTrack = useMusicStore((state) => state.updatePlannedTrack);
@@ -21,6 +28,7 @@ export default function SearchListItem({ track }: { track: Track }) {
   const plannedTracksLength = useMusicStore(
     (state) => state.plannedtracks.length
   );
+  const addRecentSearch = useRecentSearchesStore((state) => state.addRecentSearch);
 
   const { data: session } = useSession();
 
@@ -59,6 +67,34 @@ export default function SearchListItem({ track }: { track: Track }) {
       );
       toast.success("Song added to planned release");
       updatePlannedTrack(_track.id, plannedTrack);
+
+      try {
+        if (session.user?.id) {
+          const res = await fetch("/api/recent-searches", {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+            },
+            body: JSON.stringify({ trackId: _track.id }),
+          });
+          console.log(_track.id);
+
+          if (!res.ok) {
+            throw new Error(res.statusText);
+          }
+
+          const data = await res.json();
+          if (!data.ok) {
+            throw new Error(data.error);
+          }
+          addRecentSearch(_track);
+        }
+      } catch (error) {
+        console.error("error adding to recent searches", error);
+        toast.error(
+          `Failed to add song to recent searches: ${(error as Error).message}`
+        );
+      }
     } catch (error: unknown) {
       removePlannedTrack(_track.id);
       console.error(error);
@@ -76,7 +112,11 @@ export default function SearchListItem({ track }: { track: Track }) {
   };
 
   return (
-    <li className="bg-neutral-800 rounded-lg w-full">
+    <li
+      className={`bg-neutral-800 rounded-lg w-full ${
+        isPlanned ? "opacity-50" : ""
+      }`}
+    >
       <div className="flex items-center p-1 gap-3">
         <button className="group relative" onClick={handlePlay}>
           {track.album && track.album.images[0] && (
@@ -166,7 +206,10 @@ export default function SearchListItem({ track }: { track: Track }) {
         </div>
 
         <button
-          className="w-8 h-8 hover:text-green-400"
+          className={`w-8 h-8 ${
+            isPlanned ? "opacity-50" : "hover:text-green-400"
+          } `}
+          disabled={isPlanned}
           onClick={() => handleAdd(track)}
         >
           <svg

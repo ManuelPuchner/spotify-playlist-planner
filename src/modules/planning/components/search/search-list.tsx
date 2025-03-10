@@ -24,6 +24,7 @@ export default function SearchList({
   const [shownTracks, setShownTracks] = useState<Track[]>(
     initialTracksData.slice(0, 5)
   );
+  const plannedTracks = useMusicStore((state) => state.plannedtracks);
 
   const [, setLoading] = useState(false);
 
@@ -70,7 +71,13 @@ export default function SearchList({
     >
       <ul className="flex flex-col gap-2 w-full">
         {shownTracks.map((track, index) => (
-          <SearchListItem key={index} track={track} />
+          <SearchListItem
+            key={index}
+            track={track}
+            isPlanned={plannedTracks.some(
+              (plannedTrack) => plannedTrack.spotifyTrackId === track.id
+            )}
+          />
         ))}
       </ul>
       {tracks.length !== 0 && (
@@ -100,6 +107,7 @@ export default function SearchList({
             <input
               className="px-2 py-1 border-0 rounded-lg bg-neutral-950 focus:bg-neutral-900 hover:bg-neutral-900 w-8 text-center"
               type="text"
+              readOnly
               value={offset / 5 + 1}
             />
           </span>
