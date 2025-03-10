@@ -14,7 +14,7 @@ export default function LikedSongsSidebar({
   };
   session: Session;
 }) {
-  const [expanded, setExpanded] = useState(false);
+  const [expanded, setExpanded] = useState(true);
 
   return (
     <aside
