@@ -70,7 +70,12 @@ export default function PlannedReleaseItem({
           console.log("right click");
         }}
       >
-        <h3 className="text-xl font-bold ">{plannedRelease.name}</h3>
+        <h3 className="text-xl font-bold ">
+          {plannedRelease.name}{" "}
+          <span className="text-sm text-neutral-400">
+            ({plannedRelease.plannedSongs.length})
+          </span>
+        </h3>
         <p className="text-neutral-400">
           <span>release date: </span>
           {plannedRelease.scheduledAt &&
