@@ -19,7 +19,12 @@ export default async function PlannedTracks({
 
   return (
     <div>
-      <h3 className="text-3xl font-bold mb-4">Planned Tracks</h3>
+      <h3 className="text-3xl font-bold mb-4">
+        Planned Tracks{" "}
+        <span className="font-mono text-xl text-neutral-500">
+          ({plannedTracks.length})
+        </span>
+      </h3>
 
       <ul className="flex flex-col gap-2 w-1/2">
         <PlannedTracksList
